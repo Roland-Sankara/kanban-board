@@ -15,6 +15,8 @@ export default class KanbanBoard extends Component {
     this.stagesNames = ['Backlog', 'To Do', 'Ongoing', 'Done'];
     this.onchange = this.onchange.bind(this);
     this.addNewTask = this.addNewTask.bind(this);
+    this.elevateStage = this.elevateStage.bind(this);
+    this.lowerStage = this.lowerStage.bind(this);
   }
 
   // Function to collect the new task from the input onchange
@@ -31,10 +33,23 @@ export default class KanbanBoard extends Component {
   }
   
   // Function to elevate the task stage
-  elevateStage(){
-    
+  elevateStage(task,stagesTasks){
+      task.stage += 1;
+      let newTasks = [];
+      for(let category of stagesTasks){
+        newTasks = newTasks.concat(category);
+      }
+      this.setState({tasks:newTasks})
   }
   // Function to lower the task stage
+  lowerStage(task,stagesTasks){
+    task.stage -= 1;
+    let newTasks = [];
+    for(let category of stagesTasks){
+      newTasks = newTasks.concat(category);
+    }
+    this.setState({tasks:newTasks})
+}
 
 
 
@@ -71,10 +86,10 @@ export default class KanbanBoard extends Component {
                                       <div className="li-content layout-row justify-content-between align-items-center">
                                         <span data-testid={`${task.name.split(' ').join('-')}-name`}>{task.name}</span>
                                         <div className="icons">
-                                          <button className="icon-only x-small mx-2" data-testid={`${task.name.split(' ').join('-')}-back`} disabled={task.stage === 0?true:false}>
+                                          <button onClick={()=>{this.lowerStage(task,stagesTasks)}} className="icon-only x-small mx-2" data-testid={`${task.name.split(' ').join('-')}-back`} disabled={task.stage === 0?true:false}>
                                             <i className="material-icons">arrow_back</i>
                                           </button>
-                                          <button className="icon-only x-small mx-2" data-testid={`${task.name.split(' ').join('-')}-forward`} disabled={task.stage === 3?true:false}>
+                                          <button onClick={()=>{this.elevateStage(task,stagesTasks)}} className="icon-only x-small mx-2" data-testid={`${task.name.split(' ').join('-')}-forward`} disabled={task.stage === 3?true:false}>
                                             <i className="material-icons">arrow_forward</i>
                                           </button>
                                           <button className="icon-only danger x-small mx-2" data-testid={`${task.name.split(' ').join('-')}-delete`}>
